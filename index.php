@@ -243,24 +243,22 @@ $posts = [
         </div>
         <div class="popular__posts">
           
-        <?php
-function get_item($input) {
-    $output = '';
-    if ($input['type'] == "post-quote") {
-        return $output = ' <blockquote>
-        <p>' .$input['content'] .'</p>
+    <?php function TestBlockHTML ($input) { ob_start(); ?>
+    <?php if ($input['type'] == "post-quote"): ?>
+     <blockquote>
+        <p><?=$input['content'] ?></p>
         <cite>Неизвестный Автор</cite>
-    </blockquote>';
-    } else if ($input['type'] == "post-text") {
-        return $output = ' <p>'.$input['content'] .'</p>';
-    } else if ($input['type'] == "post-photo") {
-        return $output = ' <div class="post-photo__image-wrapper">
-        <img src="img/'.$input['content'] .'" alt="Фото от пользователя" width="360" height="240">
-    </div>';
-    } else if ($input['type'] == "post-video") {
-        return $output = '  <div class="post-video__block">
+    </blockquote>
+    <?php elseif ($input['type'] == "post-text"): ?> 
+    <p><?=$input['content'] ?></p>
+    <?php elseif ($input['type'] == "post-photo"): ?>  
+       <div class="post-photo__image-wrapper">
+        <img src="img/<?=$input['content'] ?>" alt="Фото от пользователя" width="360" height="240">
+    </div>
+    <?php elseif ($input['type'] == "post-video"): ?>  
+       <div class="post-video__block">
         <div class="post-video__preview">
-            <?=embed_youtube_cover('.$input['content'] .'); ?>
+        <?=embed_youtube_cover($input['content']); ?>
             <img src="img/coast-medium.jpg" alt="Превью к видео" width="360" height="188">
         </div>
         <a href="post-details.html" class="post-video__play-big button">
@@ -269,41 +267,43 @@ function get_item($input) {
             </svg>
             <span class="visually-hidden">Запустить проигрыватель</span>
         </a>
-    </div>';
-    } else if ($input['type'] == "post-link") {
-        return $output = ' <div class="post-link__wrapper">
+    </div>
+    <?php elseif ($input['type'] == "post-link"): ?>   
+      <div class="post-link__wrapper">
         <a class="post-link__external" href="http://" title="Перейти по ссылке">
             <div class="post-link__info-wrapper">
                 <div class="post-link__icon-wrapper">
                     <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
                 </div>
                 <div class="post-link__info">
-                    <h3>'.$input['title'] .'</h3>
+                    <h3><?=$input['title'] ?></h3>
                 </div>
             </div>
-            <span>'.$input['content'] .'</span>
+            <span><?=$input['content'] ?></span>
         </a>
-    </div>';
-    } 
-}
-?>
+    </div>
+<?php endif ?>  
+<?php
+    return ob_get_clean();
+} ?>
 
-<?php for ($i = 0; $i < count($posts); $i++) {
-    $post = $posts[$i];
-    echo ' <article class="popular__post post '.$post['type'] .'">
+
+    <?php foreach ($posts as $post ): ?>
+
+   <article class="popular__post post '.$post['type'] .'">
         <header class="post__header">
-            <h2>'.$post['title'] .'</h2>
+            <h2><?=$post['title'] ?></h2>
         </header>
-        <div class="post__main">'. get_item($post) .' </div>
+        <div class="post__main"> <?=TestBlockHTML($post) ?></div>
         <footer class="post__footer">
             <div class="post__author">
                 <a class="post__author-link" href="#" title="Автор">
                     <div class="post__avatar-wrapper">
                         <!--укажите путь к файлу аватара-->
-                        <img class="post__author-avatar" src="img/'.$post['avatar'] .'" alt="Аватар пользователя">
+                        <img class="post__author-avatar" src="img/<?=$post['avatar'] ?>" alt="Аватар пользователя">
                     </div>
                     <div class="post__info">
-                        <b class="post__author-name">'.$posts['name'] .'</b>
+                        <b class="post__author-name"><?=$post['name'] ?></b>
                         <time class="post__time" datetime="">дата</time>
                     </div>
                 </a>
@@ -330,8 +330,8 @@ function get_item($input) {
                 </div>
             </div>
         </footer>
-    </article>';
-} ?>
+    </article>
+    <?php endforeach; ?>
           
         </div>
     </div>
